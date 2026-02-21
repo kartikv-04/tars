@@ -1,0 +1,75 @@
+import { v } from "convex/values";
+import { mutation, query } from "./_generated/server";
+
+// Send a message
+export const sendMessage = mutation({
+    args: {
+        conversationId: v.id("conversations"),
+        content: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+        if (!identity) throw new Error("Not authenticated");
+
+        const currentUser = await ctx.db
+            .query("users")
+            .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+            .unique();
+        if (!currentUser) throw new Error("User not found");
+
+        const messageId = await ctx.db.insert("messages", {
+            conversationId: args.conversationId,
+            senderId: currentUser._id,
+            content: args.content,
+        });
+
+        // Update conversation's last message
+        await ctx.db.patch(args.conversationId, {
+            lastMessageId: messageId,
+            lastMessageTime: Date.now(),
+        });
+
+        // Auto mark-as-read for the sender
+        const membership = await ctx.db
+            .query("conversationMembers")
+            .withIndex("by_conversationId_userId", (q) =>
+                q.eq("conversationId", args.conversationId).eq("userId", currentUser._id)
+            )
+            .unique();
+
+        if (membership) {
+            await ctx.db.patch(membership._id, { lastReadTime: Date.now() });
+        }
+
+        return messageId;
+    },
+});
+
+// Get messages for a conversation (real-time)
+export const getMessages = query({
+    args: {
+        conversationId: v.id("conversations"),
+    },
+    handler: async (ctx, args) => {
+        const messages = await ctx.db
+            .query("messages")
+            .withIndex("by_conversationId", (q) =>
+                q.eq("conversationId", args.conversationId)
+            )
+            .order("asc")
+            .collect();
+
+        // Attach sender info to each message
+        return Promise.all(
+            messages.map(async (message) => {
+                const sender = await ctx.db.get(message.senderId);
+                return {
+                    ...message,
+                    sender: sender
+                        ? { name: sender.name, imageUrl: sender.imageUrl }
+                        : null,
+                };
+            })
+        );
+    },
+});

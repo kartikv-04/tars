@@ -51,3 +51,24 @@ export const getCurrentUser = query({
             .unique();
     },
 });
+
+// Search/list all users except the current user
+export const searchUsers = query({
+    args: { search: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+        if (!identity) return [];
+
+        const allUsers = await ctx.db.query("users").collect();
+
+        return allUsers.filter((user) => {
+            // Exclude self
+            if (user.clerkId === identity.subject) return false;
+            // Filter by search term
+            if (args.search && args.search.trim() !== "") {
+                return user.name.toLowerCase().includes(args.search.toLowerCase());
+            }
+            return true;
+        });
+    },
+});
