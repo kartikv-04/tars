@@ -8,6 +8,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import { ChatHeader } from "@/components/chat/ChatHeader";
 import { MessageList } from "@/components/chat/MessageList";
 import { ChatInput } from "@/components/chat/ChatInput";
+import { TypingIndicator } from "@/components/chat/TypingIndicator";
 
 interface ChatPageProps {
     params: Promise<{ conversationId: string }>;
@@ -27,6 +28,7 @@ export default function ConversationPage({ params }: ChatPageProps) {
         <div className="flex flex-col h-full bg-background">
             <ChatHeader conversationId={typedConversationId} />
             <MessageList conversationId={typedConversationId} />
+            <TypingIndicator conversationId={typedConversationId} />
             <ChatInput conversationId={typedConversationId} />
         </div>
     );

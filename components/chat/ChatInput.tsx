@@ -6,6 +6,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { SendHorizontal } from "lucide-react";
+import { useTyping } from "@/hooks/useTyping";
 
 interface ChatInputProps {
     conversationId: Id<"conversations">;
@@ -14,12 +15,14 @@ interface ChatInputProps {
 export function ChatInput({ conversationId }: ChatInputProps) {
     const [message, setMessage] = useState("");
     const sendMessage = useMutation(api.messages.sendMessage);
+    const { emitTyping, stopTyping } = useTyping(conversationId);
 
     const handleSend = async () => {
         const trimmed = message.trim();
         if (!trimmed) return;
 
         setMessage("");
+        stopTyping();
         await sendMessage({
             conversationId,
             content: trimmed,
@@ -39,7 +42,10 @@ export function ChatInput({ conversationId }: ChatInputProps) {
                 <div className="flex-1 relative">
                     <textarea
                         value={message}
-                        onChange={(e) => setMessage(e.target.value)}
+                        onChange={(e) => {
+                            setMessage(e.target.value);
+                            emitTyping();
+                        }}
                         onKeyDown={handleKeyDown}
                         placeholder="Type a message..."
                         rows={1}
