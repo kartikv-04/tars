@@ -64,9 +64,13 @@ export const searchUsers = query({
         return allUsers.filter((user) => {
             // Exclude self
             if (user.clerkId === identity.subject) return false;
-            // Filter by search term
+            // Filter by search term (name or email)
             if (args.search && args.search.trim() !== "") {
-                return user.name.toLowerCase().includes(args.search.toLowerCase());
+                const term = args.search.toLowerCase();
+                return (
+                    user.name.toLowerCase().includes(term) ||
+                    user.email.toLowerCase().includes(term)
+                );
             }
             return true;
         });
