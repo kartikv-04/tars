@@ -36,11 +36,7 @@ export function ConversationList() {
                     const isActive = activeId === conversation._id;
                     const otherUser = conversation.otherUser;
 
-                    // Check for unread messages
-                    const hasUnread =
-                        conversation.lastMessageTime &&
-                        conversation.lastReadTime &&
-                        conversation.lastMessageTime > conversation.lastReadTime;
+                    const unreadCount = conversation.unreadCount ?? 0;
 
                     return (
                         <button
@@ -65,7 +61,7 @@ export function ConversationList() {
 
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between">
-                                    <p className={`text-sm truncate ${hasUnread ? "font-semibold" : "font-medium"}`}>
+                                    <p className={`text-sm truncate ${unreadCount > 0 ? "font-semibold" : "font-medium"}`}>
                                         {otherUser?.name ?? "Unknown User"}
                                     </p>
                                     {conversation.lastMessageTime && (
@@ -75,12 +71,12 @@ export function ConversationList() {
                                     )}
                                 </div>
                                 <div className="flex items-center justify-between mt-0.5">
-                                    <p className={`text-xs truncate ${hasUnread ? "text-foreground" : "text-muted-foreground"}`}>
+                                    <p className={`text-xs truncate ${unreadCount > 0 ? "text-foreground" : "text-muted-foreground"}`}>
                                         {conversation.lastMessage?.content ?? "No messages yet"}
                                     </p>
-                                    {hasUnread && (
+                                    {unreadCount > 0 && (
                                         <Badge className="ml-2 h-5 min-w-5 flex items-center justify-center rounded-full bg-primary text-[10px] px-1.5 shrink-0">
-                                            •
+                                            {unreadCount}
                                         </Badge>
                                     )}
                                 </div>

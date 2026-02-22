@@ -98,6 +98,20 @@ export const getMyConversations = query({
                     ? await ctx.db.get(conversation.lastMessageId)
                     : null;
 
+                // Count unread messages
+                const allMessages = await ctx.db
+                    .query("messages")
+                    .withIndex("by_conversationId", (q) =>
+                        q.eq("conversationId", conversation._id)
+                    )
+                    .collect();
+
+                const unreadCount = allMessages.filter(
+                    (msg) =>
+                        msg._creationTime > membership.lastReadTime &&
+                        msg.senderId !== currentUser._id
+                ).length;
+
                 return {
                     _id: conversation._id,
                     otherUser,
@@ -106,6 +120,7 @@ export const getMyConversations = query({
                         : null,
                     lastMessageTime: conversation.lastMessageTime,
                     lastReadTime: membership.lastReadTime,
+                    unreadCount,
                 };
             })
         );
