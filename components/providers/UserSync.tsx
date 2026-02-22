@@ -4,10 +4,14 @@ import { useUser } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
 import { useEffect } from "react";
 import { api } from "@/convex/_generated/api";
+import { usePresence } from "@/hooks/usePresence";
 
 export function UserSync() {
     const { user, isLoaded, isSignedIn } = useUser();
     const upsertUser = useMutation(api.users.upsertUser);
+
+    // Start presence heartbeat
+    usePresence();
 
     useEffect(() => {
         if (isLoaded && isSignedIn && user) {
@@ -20,5 +24,5 @@ export function UserSync() {
         }
     }, [user, isLoaded, isSignedIn, upsertUser]);
 
-    return null; // This component just handles side-effects
+    return null;
 }
