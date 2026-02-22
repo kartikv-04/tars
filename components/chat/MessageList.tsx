@@ -96,7 +96,7 @@ export function MessageList({ conversationId }: MessageListProps) {
             >
                 <div className="py-4 space-y-1">
                     {messages.map((message, i) => {
-                        const isOwn = message.sender?.name === `${user?.firstName} ${user?.lastName}`;
+                        const isOwn = message.sender?.clerkId === user?.id;
                         const prevMessage = messages[i - 1];
                         const showAvatar = !prevMessage || prevMessage.senderId !== message.senderId;
 

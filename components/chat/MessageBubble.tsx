@@ -36,7 +36,7 @@ export function MessageBubble({ content, timestamp, isOwn, sender, showAvatar }:
                     className={cn(
                         "rounded-2xl px-3.5 py-2 text-sm leading-relaxed",
                         isOwn
-                            ? "bg-primary text-primary-foreground rounded-br-sm"
+                            ? "bg-blue-600 text-white rounded-br-sm"
                             : "bg-muted rounded-bl-sm"
                     )}
                 >

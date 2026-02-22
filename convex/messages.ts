@@ -66,7 +66,7 @@ export const getMessages = query({
                 return {
                     ...message,
                     sender: sender
-                        ? { name: sender.name, imageUrl: sender.imageUrl }
+                        ? { name: sender.name, imageUrl: sender.imageUrl, clerkId: sender.clerkId }
                         : null,
                 };
             })
