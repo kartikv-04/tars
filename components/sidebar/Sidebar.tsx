@@ -8,7 +8,7 @@ import { MessageSquare } from "lucide-react";
 
 export function Sidebar() {
     return (
-        <aside className="w-80 border-r bg-card flex flex-col h-full">
+        <aside className="w-full md:w-80 border-r bg-card flex flex-col h-full">
             {/* Header */}
             <div className="p-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
