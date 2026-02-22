@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 export function ConversationList() {
     const conversations = useQuery(api.conversations.getMyConversations);
@@ -18,13 +19,11 @@ export function ConversationList() {
 
     if (!conversations || conversations.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center gap-3 py-12 text-muted-foreground">
-                <MessageCircle className="h-12 w-12 opacity-30" />
-                <div className="text-center">
-                    <p className="text-sm font-medium">No conversations yet</p>
-                    <p className="text-xs mt-1">Search for a user to start chatting</p>
-                </div>
-            </div>
+            <EmptyState
+                icon={MessageCircle}
+                title="No conversations yet"
+                subtitle="Search for a user to start chatting"
+            />
         );
     }
 
@@ -48,8 +47,8 @@ export function ConversationList() {
                             key={conversation._id}
                             onClick={() => router.push(`/chat/${conversation._id}`)}
                             className={`flex items-center gap-3 w-full rounded-lg px-3 py-3 transition-all text-left group ${isActive
-                                    ? "bg-accent shadow-sm"
-                                    : "hover:bg-accent/50"
+                                ? "bg-accent shadow-sm"
+                                : "hover:bg-accent/50"
                                 }`}
                         >
                             <div className="relative">

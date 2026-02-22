@@ -7,6 +7,8 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { MessageBubble } from "./MessageBubble";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { MessageCircle } from "lucide-react";
 
 interface MessageListProps {
     conversationId: Id<"conversations">;
@@ -35,11 +37,12 @@ export function MessageList({ conversationId }: MessageListProps) {
 
     if (messages.length === 0) {
         return (
-            <div className="flex-1 flex items-center justify-center text-muted-foreground">
-                <div className="text-center">
-                    <p className="text-sm">No messages yet</p>
-                    <p className="text-xs mt-1">Send a message to start the conversation</p>
-                </div>
+            <div className="flex-1 flex items-center justify-center">
+                <EmptyState
+                    icon={MessageCircle}
+                    title="No messages yet"
+                    subtitle="Send a message to start the conversation"
+                />
             </div>
         );
     }

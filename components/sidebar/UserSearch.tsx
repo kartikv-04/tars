@@ -8,7 +8,8 @@ import { Id } from "@/convex/_generated/dataModel";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Search, MessageCircle } from "lucide-react";
+import { Search, UserX } from "lucide-react";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 export function UserSearch() {
     const [search, setSearch] = useState("");
@@ -44,10 +45,11 @@ export function UserSearch() {
                 <div className="absolute top-full left-0 right-0 mt-1 z-50 rounded-lg border bg-popover shadow-lg overflow-hidden">
                     <ScrollArea className="max-h-60">
                         {!users || users.length === 0 ? (
-                            <div className="flex flex-col items-center gap-2 py-6 text-muted-foreground">
-                                <MessageCircle className="h-8 w-8 opacity-50" />
-                                <p className="text-sm">No users found</p>
-                            </div>
+                            <EmptyState
+                                icon={UserX}
+                                title="No users found"
+                                className="py-6"
+                            />
                         ) : (
                             users.map((user) => (
                                 <button
