@@ -47,7 +47,7 @@ export const getCurrentUser = query({
 
         return await ctx.db
             .query("users")
-            .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
+            .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId!))
             .unique();
     },
 });
